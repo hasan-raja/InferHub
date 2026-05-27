@@ -72,7 +72,8 @@ async def main() -> None:
             health_app,
             host=settings.health_host,
             port=settings.health_port,
-            log_level="info",
+            log_level="warning",
+            access_log=False,
         )
     )
 
@@ -101,4 +102,3 @@ async def main() -> None:
 
 if __name__ == "__main__":
     asyncio.run(main())
-

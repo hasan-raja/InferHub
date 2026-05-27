@@ -41,4 +41,3 @@ class GroqClient:
     async def vision_chat(self, *, model: str, messages: list[dict[str, Any]]) -> dict[str, Any]:
         response = await self._client.chat.completions.create(model=model, messages=messages)
         return response.model_dump()
-

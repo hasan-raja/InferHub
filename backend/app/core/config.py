@@ -39,8 +39,14 @@ class Settings(BaseSettings):
     kafka_bootstrap_servers: str = "localhost:9092"
 
     groq_api_key: str = Field(default="", repr=False)
-    groq_base_url: str = "https://api.groq.com/openai/v1"
+    groq_base_url: str = "https://api.groq.com"
     groq_timeout_seconds: float = 30.0
+    llm_worker_target: str = "localhost:50051"
+    asr_worker_target: str = "localhost:50052"
+    tts_worker_target: str = "localhost:50053"
+    vision_worker_target: str = "localhost:50054"
+    grpc_timeout_seconds: float = 30.0
+    websocket_presence_ttl_seconds: int = 45
 
     floci_endpoint_url: str = "http://localhost:4566"
     floci_region: str = "us-east-1"

@@ -41,7 +41,7 @@ class LLMWorkerService(inference_pb2_grpc.LLMWorkerServicer):
             await context.abort(grpc.StatusCode.INVALID_ARGUMENT, str(exc))
         except Exception as exc:
             WORKER_REQUESTS.labels(self._settings.worker_name, method, "error").inc()
-            await context.abort(grpc.StatusCode.INTERNAL, exc.__class__.__name__)
+            await context.abort(grpc.StatusCode.INTERNAL, _error_detail(exc))
         finally:
             WORKER_LATENCY.labels(self._settings.worker_name, method).observe(time.perf_counter() - started)
 
@@ -77,7 +77,7 @@ class LLMWorkerService(inference_pb2_grpc.LLMWorkerServicer):
             await context.abort(grpc.StatusCode.INVALID_ARGUMENT, str(exc))
         except Exception as exc:
             WORKER_REQUESTS.labels(self._settings.worker_name, method, "error").inc()
-            await context.abort(grpc.StatusCode.INTERNAL, exc.__class__.__name__)
+            await context.abort(grpc.StatusCode.INTERNAL, _error_detail(exc))
         finally:
             WORKER_LATENCY.labels(self._settings.worker_name, method).observe(time.perf_counter() - started)
 
@@ -89,3 +89,8 @@ def _validate_chat(request, context) -> None:
         raise ValueError("model is required")
     if not request.messages:
         raise ValueError("messages are required")
+
+
+def _error_detail(exc: Exception) -> str:
+    detail = str(exc).strip()
+    return f"{exc.__class__.__name__}: {detail}" if detail else exc.__class__.__name__

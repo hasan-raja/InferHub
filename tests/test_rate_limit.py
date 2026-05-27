@@ -1,3 +1,5 @@
+import pytest
+
 from app.auth.rate_limit import check_fixed_window_rate_limit
 
 
@@ -14,6 +16,7 @@ class FakeRedis:
         self.expirations[key] = seconds
 
 
+@pytest.mark.asyncio
 async def test_fixed_window_rate_limit_allows_until_limit():
     redis = FakeRedis()
 
@@ -27,4 +30,3 @@ async def test_fixed_window_rate_limit_allows_until_limit():
     assert second.remaining == 0
     assert third.allowed is False
     assert third.remaining == 0
-

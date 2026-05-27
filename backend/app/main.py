@@ -6,10 +6,13 @@ from prometheus_client import make_asgi_app
 
 from app.api.v1.auth import router as auth_router
 from app.api.v1.health import router as health_router
+from app.api.v1.inference import router as inference_router
 from app.api.v1.models import router as models_router
+from app.api.v1.websockets import router as websocket_router
 from app.core.config import get_settings
 from app.core.middleware import RequestContextMiddleware
 from app.db.clients import close_dependencies, open_dependencies
+from app.inference.grpc_clients import WorkerClientManager
 from app.observability.tracing import configure_tracing
 
 
@@ -21,7 +24,9 @@ async def lifespan(app: FastAPI):
     settings = get_settings()
     logger.info("gateway_starting", app=settings.app_name, env=settings.app_env)
     app.state.dependencies = await open_dependencies(settings)
+    app.state.worker_clients = WorkerClientManager(settings)
     yield
+    await app.state.worker_clients.close()
     await close_dependencies(app.state.dependencies)
     logger.info("gateway_stopped")
 
@@ -42,6 +47,8 @@ def create_app() -> FastAPI:
     app.include_router(health_router, tags=["health"])
     app.include_router(auth_router)
     app.include_router(models_router)
+    app.include_router(inference_router)
+    app.include_router(websocket_router)
     app.mount("/metrics", make_asgi_app())
 
     return app

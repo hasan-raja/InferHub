@@ -19,7 +19,7 @@ class WorkerSettings(BaseSettings):
     health_host: str = "0.0.0.0"
     health_port: int = 8090
     groq_api_key: str = Field(default="", repr=False)
-    groq_base_url: str = "https://api.groq.com/openai/v1"
+    groq_base_url: str = "https://api.groq.com"
     groq_timeout_seconds: float = 30.0
     groq_max_retries: int = 2
 
@@ -27,4 +27,3 @@ class WorkerSettings(BaseSettings):
 @lru_cache
 def get_worker_settings() -> WorkerSettings:
     return WorkerSettings()
-

@@ -26,8 +26,14 @@ services:
       CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD:-inferhub}
       KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS:-kafka:9092}
       GROQ_API_KEY: ${GROQ_API_KEY:-}
-      GROQ_BASE_URL: ${GROQ_BASE_URL:-https://api.groq.com/openai/v1}
+      GROQ_BASE_URL: ${GROQ_BASE_URL:-https://api.groq.com}
       GROQ_TIMEOUT_SECONDS: ${GROQ_TIMEOUT_SECONDS:-30}
+      LLM_WORKER_TARGET: ${LLM_WORKER_TARGET:-llm-worker:50051}
+      ASR_WORKER_TARGET: ${ASR_WORKER_TARGET:-asr-worker:50052}
+      TTS_WORKER_TARGET: ${TTS_WORKER_TARGET:-tts-worker:50053}
+      VISION_WORKER_TARGET: ${VISION_WORKER_TARGET:-vision-worker:50054}
+      GRPC_TIMEOUT_SECONDS: ${GRPC_TIMEOUT_SECONDS:-30}
+      WEBSOCKET_PRESENCE_TTL_SECONDS: ${WEBSOCKET_PRESENCE_TTL_SECONDS:-45}
       FLOCI_ENDPOINT_URL: ${FLOCI_ENDPOINT_URL:-http://floci:4566}
       FLOCI_REGION: ${FLOCI_REGION:-us-east-1}
       FLOCI_ACCESS_KEY_ID: ${FLOCI_ACCESS_KEY_ID:-inferhub}
@@ -44,6 +50,14 @@ services:
         condition: service_healthy
       kafka:
         condition: service_healthy
+      llm-worker:
+        condition: service_healthy
+      asr-worker:
+        condition: service_healthy
+      tts-worker:
+        condition: service_healthy
+      vision-worker:
+        condition: service_healthy
 
   llm-worker:
     build:
@@ -55,7 +69,7 @@ services:
       GRPC_PORT: 50051
       HEALTH_PORT: 8090
       GROQ_API_KEY: ${GROQ_API_KEY:-}
-      GROQ_BASE_URL: ${GROQ_BASE_URL:-https://api.groq.com/openai/v1}
+      GROQ_BASE_URL: ${GROQ_BASE_URL:-https://api.groq.com}
       GROQ_TIMEOUT_SECONDS: ${GROQ_TIMEOUT_SECONDS:-30}
       GROQ_MAX_RETRIES: ${GROQ_MAX_RETRIES:-2}
     ports:
@@ -77,7 +91,7 @@ services:
       GRPC_PORT: 50052
       HEALTH_PORT: 8090
       GROQ_API_KEY: ${GROQ_API_KEY:-}
-      GROQ_BASE_URL: ${GROQ_BASE_URL:-https://api.groq.com/openai/v1}
+      GROQ_BASE_URL: ${GROQ_BASE_URL:-https://api.groq.com}
       GROQ_TIMEOUT_SECONDS: ${GROQ_TIMEOUT_SECONDS:-30}
       GROQ_MAX_RETRIES: ${GROQ_MAX_RETRIES:-2}
     ports:
@@ -99,7 +113,7 @@ services:
       GRPC_PORT: 50053
       HEALTH_PORT: 8090
       GROQ_API_KEY: ${GROQ_API_KEY:-}
-      GROQ_BASE_URL: ${GROQ_BASE_URL:-https://api.groq.com/openai/v1}
+      GROQ_BASE_URL: ${GROQ_BASE_URL:-https://api.groq.com}
       GROQ_TIMEOUT_SECONDS: ${GROQ_TIMEOUT_SECONDS:-30}
       GROQ_MAX_RETRIES: ${GROQ_MAX_RETRIES:-2}
     ports:
@@ -121,7 +135,7 @@ services:
       GRPC_PORT: 50054
       HEALTH_PORT: 8090
       GROQ_API_KEY: ${GROQ_API_KEY:-}
-      GROQ_BASE_URL: ${GROQ_BASE_URL:-https://api.groq.com/openai/v1}
+      GROQ_BASE_URL: ${GROQ_BASE_URL:-https://api.groq.com}
       GROQ_TIMEOUT_SECONDS: ${GROQ_TIMEOUT_SECONDS:-30}
       GROQ_MAX_RETRIES: ${GROQ_MAX_RETRIES:-2}
     ports:

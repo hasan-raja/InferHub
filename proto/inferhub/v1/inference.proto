@@ -1,0 +1,114 @@
+syntax = "proto3";
+
+package inferhub.v1;
+
+service LLMWorker {
+  rpc Chat(ChatRequest) returns (ChatResponse);
+  rpc StreamChat(ChatRequest) returns (stream ChatStreamChunk);
+}
+
+service ASRWorker {
+  rpc Transcribe(TranscribeRequest) returns (TranscribeResponse);
+}
+
+service TTSWorker {
+  rpc Synthesize(SynthesizeRequest) returns (SynthesizeResponse);
+}
+
+service VisionWorker {
+  rpc Analyze(VisionAnalyzeRequest) returns (VisionAnalyzeResponse);
+}
+
+message ChatMessage {
+  string role = 1;
+  string content = 2;
+}
+
+message ChatRequest {
+  string request_id = 1;
+  string model = 2;
+  repeated ChatMessage messages = 3;
+  float temperature = 4;
+  uint32 max_tokens = 5;
+}
+
+message ChatResponse {
+  string request_id = 1;
+  string provider = 2;
+  string model = 3;
+  string text = 4;
+  uint32 input_tokens = 5;
+  uint32 output_tokens = 6;
+  uint32 total_tokens = 7;
+  uint32 latency_ms = 8;
+}
+
+message ChatStreamChunk {
+  string request_id = 1;
+  string provider = 2;
+  string model = 3;
+  string delta = 4;
+  bool done = 5;
+  uint32 latency_ms = 6;
+}
+
+message TranscribeRequest {
+  string request_id = 1;
+  string model = 2;
+  bytes audio = 3;
+  string filename = 4;
+  string language = 5;
+  string prompt = 6;
+}
+
+message TranscribeResponse {
+  string request_id = 1;
+  string provider = 2;
+  string model = 3;
+  string text = 4;
+  string language = 5;
+  float duration_seconds = 6;
+  uint32 latency_ms = 7;
+}
+
+message SynthesizeRequest {
+  string request_id = 1;
+  string model = 2;
+  string text = 3;
+  string voice = 4;
+  string response_format = 5;
+}
+
+message SynthesizeResponse {
+  string request_id = 1;
+  string provider = 2;
+  string model = 3;
+  bytes audio = 4;
+  string content_type = 5;
+  uint32 latency_ms = 6;
+}
+
+message VisionImage {
+  string mime_type = 1;
+  bytes content = 2;
+  string image_url = 3;
+}
+
+message VisionAnalyzeRequest {
+  string request_id = 1;
+  string model = 2;
+  string prompt = 3;
+  repeated VisionImage images = 4;
+}
+
+message VisionAnalyzeResponse {
+  string request_id = 1;
+  string provider = 2;
+  string model = 3;
+  string text = 4;
+  uint32 input_tokens = 5;
+  uint32 output_tokens = 6;
+  uint32 total_tokens = 7;
+  uint32 latency_ms = 8;
+}
+

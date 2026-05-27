@@ -45,6 +45,94 @@ services:
       kafka:
         condition: service_healthy
 
+  llm-worker:
+    build:
+      context: .
+      dockerfile: workers/Dockerfile
+    environment:
+      WORKER_NAME: llm-worker
+      WORKER_KIND: llm
+      GRPC_PORT: 50051
+      HEALTH_PORT: 8090
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      GROQ_BASE_URL: ${GROQ_BASE_URL:-https://api.groq.com/openai/v1}
+      GROQ_TIMEOUT_SECONDS: ${GROQ_TIMEOUT_SECONDS:-30}
+      GROQ_MAX_RETRIES: ${GROQ_MAX_RETRIES:-2}
+    ports:
+      - "50051:50051"
+      - "8091:8090"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8090/health', timeout=2).read()"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  asr-worker:
+    build:
+      context: .
+      dockerfile: workers/Dockerfile
+    environment:
+      WORKER_NAME: asr-worker
+      WORKER_KIND: asr
+      GRPC_PORT: 50052
+      HEALTH_PORT: 8090
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      GROQ_BASE_URL: ${GROQ_BASE_URL:-https://api.groq.com/openai/v1}
+      GROQ_TIMEOUT_SECONDS: ${GROQ_TIMEOUT_SECONDS:-30}
+      GROQ_MAX_RETRIES: ${GROQ_MAX_RETRIES:-2}
+    ports:
+      - "50052:50052"
+      - "8092:8090"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8090/health', timeout=2).read()"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  tts-worker:
+    build:
+      context: .
+      dockerfile: workers/Dockerfile
+    environment:
+      WORKER_NAME: tts-worker
+      WORKER_KIND: tts
+      GRPC_PORT: 50053
+      HEALTH_PORT: 8090
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      GROQ_BASE_URL: ${GROQ_BASE_URL:-https://api.groq.com/openai/v1}
+      GROQ_TIMEOUT_SECONDS: ${GROQ_TIMEOUT_SECONDS:-30}
+      GROQ_MAX_RETRIES: ${GROQ_MAX_RETRIES:-2}
+    ports:
+      - "50053:50053"
+      - "8093:8090"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8090/health', timeout=2).read()"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  vision-worker:
+    build:
+      context: .
+      dockerfile: workers/Dockerfile
+    environment:
+      WORKER_NAME: vision-worker
+      WORKER_KIND: vision
+      GRPC_PORT: 50054
+      HEALTH_PORT: 8090
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      GROQ_BASE_URL: ${GROQ_BASE_URL:-https://api.groq.com/openai/v1}
+      GROQ_TIMEOUT_SECONDS: ${GROQ_TIMEOUT_SECONDS:-30}
+      GROQ_MAX_RETRIES: ${GROQ_MAX_RETRIES:-2}
+    ports:
+      - "50054:50054"
+      - "8094:8090"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8090/health', timeout=2).read()"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
   postgres:
     image: postgres:16-alpine
     environment:

@@ -1,0 +1,2 @@
+"""Vision worker service."""
+

@@ -13,3 +13,4 @@ Phase 1 creates the production-shaped foundation:
 
 See [docs/phase-01.md](docs/phase-01.md) for architecture, commands and Sarvam alignment.
 See [docs/phase-02.md](docs/phase-02.md) for authentication, authorization, rate limiting and model registry.
+See [docs/phase-03.md](docs/phase-03.md) for gRPC worker services and Groq integration.
